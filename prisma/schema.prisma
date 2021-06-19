@@ -11,23 +11,24 @@ generator client {
 }
 
 model User {
-  id                          String         @id
-  email                       String         @unique
-  password                    String
-  passwordResetToken          String?        @map("password_reset_token")
-  passwordResetTokenExpiresAt DateTime?      @map("password_reset_token_expires_at")
-  isDeleted                   Boolean        @default(false) @map("is_deleted")
-  isEmailConfirmed            Boolean        @default(false) @map("is_email_confirmed")
-  emailConfirmationToken      String?        @map("email_confirmation_token")
-  refreshTokens               RefreshToken[]
-  customer                    Customer?
+  id                              String         @id @default(cuid())
+  email                           String         @unique
+  password                        String
+  passwordResetToken              String?        @map("password_reset_token") @unique
+  passwordResetTokenExpiresAt     DateTime?      @map("password_reset_token_expires_at")
+  isDeleted                       Boolean        @default(false) @map("is_deleted")
+  isEmailConfirmed                Boolean        @default(false) @map("is_email_confirmed")
+  emailConfirmationToken          String?        @map("email_confirmation_token") @unique
+  emailConfirmationTokenExpiresAt DateTime?      @map("email_confirmation_token_expires_at")
+  refreshTokens                   RefreshToken[]
+  customer                        Customer?
+  invitations                     Invitation[]
 
-  PrismaInvitation Invitation[]
   @@map("users")
 }
 
 model RefreshToken {
-  id        String   @id
+  id        String   @id @default(cuid())
   token     String   @unique
   expiresAt DateTime @map("expires_at")
   user      User     @relation(fields: [userId], references: [id])
@@ -37,7 +38,7 @@ model RefreshToken {
 }
 
 model Reservation {
-  id          String   @id
+  id          String   @id @default(cuid())
   recurringId String?  @map("recurring_id")
   name        String
   customer    Customer @relation(fields: [customerId], references: [id])
@@ -59,7 +60,7 @@ enum CustomerRole {
 }
 
 model Customer {
-  id           String        @id
+  id           String        @id @default(cuid())
   name         String
   user         User          @relation(fields: [userId], references: [id])
   userId       String        @unique @map("user_id")
@@ -71,7 +72,7 @@ model Customer {
 }
 
 model Invitation {
-  id           String   @id
+  id           String   @id @default(cuid())
   token        String   @unique
   expiresAt    DateTime @map("expires_at")
   inviter      User     @relation(fields: [inviterId], references: [id])

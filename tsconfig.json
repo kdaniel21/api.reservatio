@@ -10,6 +10,14 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
+    "incremental": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@common/*": ["src/common/*"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@mailer/*": ["src/modules/mailer/*"],
+      "src/*": ["src/*"],
+      "test/*": ["test/*"]
+    }
   }
 }

@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core'
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
 import { AppModule } from './app.module'
+import { applyMiddleware } from './apply-middleware'
 
 async function bootstrap() {
-  const fastifyAdapter = new FastifyAdapter({ logger: true })
-
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter)
-
-  await app.listen(3000)
+  const app = await NestFactory.create(AppModule)
+  applyMiddleware(app)
+  await app.listen(4000)
 }
 
 bootstrap()

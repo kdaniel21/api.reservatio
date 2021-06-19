@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common'
-import { GraphQLModule } from '@nestjs/graphql'
 import { PrismaService } from './services/prisma.service'
+import { GraphqlModule } from './graphql/graphql.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
+import { ConfigModule } from './config/config.module'
 
 @Module({
-  imports: [GraphQLModule.forRoot({ autoSchemaFile: true, sortSchema: true })],
-  exports: [GraphQLModule],
+  imports: [GraphqlModule, EventEmitterModule.forRoot(), ConfigModule],
+  exports: [GraphqlModule, ConfigModule, PrismaService, ConfigModule],
   providers: [PrismaService],
 })
 export class CommonModule {}

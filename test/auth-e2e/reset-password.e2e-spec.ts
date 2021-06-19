@@ -1,7 +1,6 @@
 import supertest from 'supertest'
 import bcrypt from 'bcrypt'
 import { AuthModule } from '@auth/auth.module'
-import { CommonModule } from '@common/common.module'
 import { INestApplication } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
@@ -24,7 +23,7 @@ describe('ResetPassword E2E', () => {
   let userRecord: User
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AuthModule, CommonModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AuthModule] }).compile()
     app = moduleRef.createNestApplication()
     applyMiddleware(app)
     await app.init()

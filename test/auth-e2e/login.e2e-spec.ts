@@ -12,7 +12,6 @@ import { JwtPayload } from 'src/modules/auth/services/access-token/dto/jwt-paylo
 import { extractCookies } from 'test/setup/extract-cookies'
 import crypto from 'crypto'
 import { addDays } from 'date-fns'
-import { CommonModule } from 'src/common/common.module'
 import { applyMiddleware } from 'src/apply-middleware'
 
 describe('Login E2E', () => {
@@ -24,7 +23,7 @@ describe('Login E2E', () => {
   let userRecord: User
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AuthModule, CommonModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AuthModule] }).compile()
     app = moduleRef.createNestApplication()
     applyMiddleware(app)
     await app.init()

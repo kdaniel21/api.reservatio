@@ -16,6 +16,9 @@
       "@common/*": ["src/common/*"],
       "@auth/*": ["src/modules/auth/*"],
       "@mailer/*": ["src/modules/mailer/*"],
+      "@user/*": ["src/modules/user/*"],
+      "@customer/*": ["src/modules/customer/*"],
+      "@reservation/*": ["src/modules/reservation/*"],
       "src/*": ["src/*"],
       "test/*": ["test/*"]
     }

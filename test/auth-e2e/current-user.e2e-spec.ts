@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { AuthModule } from '@auth/auth.module'
 import { JwtPayload } from '@auth/services/access-token/dto/jwt-payload.interface'
-import { CommonModule } from '@common/common.module'
 import { INestApplication } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
@@ -11,7 +10,6 @@ import { PrismaClient, User } from '@prisma/client'
 import { applyMiddleware } from 'src/apply-middleware'
 import clearAllData from 'test/setup/clear-all-data'
 import { TextUtils } from '@common/utils/text-utils'
-import { access } from 'fs'
 
 describe('CurrentUser E2E', () => {
   let app: INestApplication
@@ -23,7 +21,7 @@ describe('CurrentUser E2E', () => {
   let accessToken: string
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AuthModule, CommonModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AuthModule] }).compile()
     app = moduleRef.createNestApplication()
     applyMiddleware(app)
     await app.init()

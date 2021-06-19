@@ -4,23 +4,17 @@ import { Invitation, PrismaClient } from '@prisma/client'
 import { TextUtils } from 'src/common/utils/text-utils'
 import { UserCreatedEvent } from 'src/modules/auth/events/user-created/user-created.event'
 import supertest from 'supertest'
-import { extractCookies } from 'test/setup/extract-cookies'
 import { advanceTo } from 'jest-date-mock'
 import clearAllData from 'test/setup/clear-all-data'
 import { Test } from '@nestjs/testing'
 import { applyMiddleware } from 'src/apply-middleware'
-import { CommonModule } from 'src/common/common.module'
 import { AuthModule } from 'src/modules/auth/auth.module'
 import bcrypt from 'bcrypt'
-import crypto from 'crypto'
-import jwt from 'jsonwebtoken'
-import { JwtPayload } from 'src/modules/auth/services/access-token/dto/jwt-payload.interface'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { UserCreatedListener } from '@auth/events/user-created/user-created.listener'
-import { addDays } from 'date-fns'
 import { MailerService } from '@mailer/mailer.service'
 import { mocked } from 'ts-jest/utils'
-import { RegisterTemplate, RegisterTemplateData } from '@mailer/templates/register/register.template'
+import { RegisterTemplate } from '@mailer/templates/register/register.template'
 
 describe('Register E2E', () => {
   let app: INestApplication
@@ -32,7 +26,7 @@ describe('Register E2E', () => {
   let invitationToken: string
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AuthModule, CommonModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AuthModule] }).compile()
     app = moduleRef.createNestApplication()
     applyMiddleware(app)
     await app.init()

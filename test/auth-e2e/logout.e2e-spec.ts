@@ -4,7 +4,6 @@ import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 import { AuthModule } from '@auth/auth.module'
 import { JwtPayload } from '@auth/services/access-token/dto/jwt-payload.interface'
-import { CommonModule } from '@common/common.module'
 import { INestApplication } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
@@ -26,7 +25,7 @@ describe('Logout E2E', () => {
   let refreshTokenRecord: RefreshToken
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AuthModule, CommonModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AuthModule] }).compile()
     app = moduleRef.createNestApplication()
     applyMiddleware(app)
     await app.init()

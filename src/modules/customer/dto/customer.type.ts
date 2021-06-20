@@ -8,19 +8,15 @@ registerEnumType(CustomerRole, { name: 'CustomerRole' })
 export class CustomerType implements Partial<Customer> {
   @Field(() => ID)
   readonly id: string
-  
+
   @Field()
   readonly name: string
-  
+
   @Field(() => CustomerRole)
   readonly role: CustomerRole
-  
+
   readonly userId: string
-  
+
   @Field(() => UserType)
   readonly user?: UserType
-
-  // TODO: Add reservation
-  // @Field(() => [ReservationType])
-  // readonly reservations: ReservationType
 }

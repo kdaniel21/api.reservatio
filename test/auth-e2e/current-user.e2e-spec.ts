@@ -94,7 +94,7 @@ describe('CurrentUser E2E', () => {
     expect(res.body.data.currentUser.customer.name).toBe(customer.name)
   })
 
-  it('should throw an InvalidOrMissingAccessTokenError error if no access token is provided', async () => {
+  it('should throw an NotAuthenticated error if no access token is provided', async () => {
     const query = `query {
       currentUser {
         id
@@ -105,10 +105,10 @@ describe('CurrentUser E2E', () => {
 
     const res = await request.post('/graphql').send({ query }).expect(200)
 
-    expect(res.body.errors[0].extensions.code).toBe('INVALID_ACCESS_TOKEN')
+    expect(res.body.errors[0].extensions.code).toBe('NOT_AUTHENTICATED')
   })
 
-  it('should throw a UserNotFoundError error if the access token is valid but the user does not exist', async () => {
+  it('should throw a NotAuthenticated error if the access token is valid but the user does not exist', async () => {
     const validAccessToken = jwt.sign(
       {
         email: 'invalid@bar.com',
@@ -130,10 +130,10 @@ describe('CurrentUser E2E', () => {
       .set('Authorization', `Bearer ${validAccessToken}`)
       .expect(200)
 
-    expect(res.body.errors[0].extensions.code).toBe('USER_NOT_FOUND')
+    expect(res.body.errors[0].extensions.code).toBe('NOT_AUTHENTICATED')
   })
 
-  it('should throw a InvalidOrMissingAccessToken error if an invalid access token is provided', async () => {
+  it('should throw a NotAuthenticated error if an invalid access token is provided', async () => {
     const query = `query {
       currentUser {
         id
@@ -148,6 +148,6 @@ describe('CurrentUser E2E', () => {
       .set('Authorization', `Bearer ${TextUtils.generateRandomCharacters()}`)
       .expect(200)
 
-    expect(res.body.errors[0].extensions.code).toBe('INVALID_ACCESS_TOKEN')
+    expect(res.body.errors[0].extensions.code).toBe('NOT_AUTHENTICATED')
   })
 })

@@ -10,7 +10,9 @@ export class EmailConfirmationCreatedListener {
 
   @OnEvent(EmailConfirmationCreatedEvent.name)
   async sendConfirmationEmail(event: EmailConfirmationCreatedEvent): Promise<void> {
-    const { user } = event.props
+    const { user, shouldSendEmail } = event.props
+    if (!shouldSendEmail) return
+
     await this.mailerService.sendToUser(ConfirmEmailTemplate, user, { user })
   }
 }

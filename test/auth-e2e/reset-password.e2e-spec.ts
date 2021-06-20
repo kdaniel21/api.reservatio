@@ -50,6 +50,8 @@ describe('ResetPassword E2E', () => {
       },
     })
 
+    jest.spyOn(MailerService.prototype, 'send' as keyof MailerService).mockResolvedValue(void 0)
+
     jest.clearAllMocks()
   })
 
@@ -72,7 +74,6 @@ describe('ResetPassword E2E', () => {
   })
 
   it('should send an email with the token to the email address of the user', async () => {
-    jest.spyOn(MailerService.prototype, 'send' as keyof MailerService).mockResolvedValue(void 0)
     const query = `mutation {
       resetPassword(email: "${userRecord.email}") {
         message

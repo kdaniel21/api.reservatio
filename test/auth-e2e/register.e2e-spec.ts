@@ -15,6 +15,8 @@ import { UserCreatedListener } from '@auth/events/user-created/user-created.list
 import { MailerService } from '@mailer/mailer.service'
 import { mocked } from 'ts-jest/utils'
 import { RegisterTemplate } from '@mailer/templates/register/register.template'
+import { EmailConfirmationCreatedEvent } from '@auth/events/email-confirmation-created/email-confirmation-created.event'
+import { flushMicroTasks } from 'flush-microtasks'
 
 describe('Register E2E', () => {
   let app: INestApplication
@@ -57,14 +59,20 @@ describe('Register E2E', () => {
       },
     })
 
+    const customer = await prisma.customer.create({
+      data: { name: 'Foo Bar', userId: user.id },
+    })
+
     invitation = await prisma.invitation.create({
       data: {
-        inviterId: user.id,
+        inviterId: customer.id,
         emailAddress: 'foo@bar.com',
         token: TextUtils.hashText(invitationToken),
         expiresAt: new Date('2021-06-13 14:00'),
       },
     })
+
+    jest.spyOn(MailerService.prototype, 'send' as keyof MailerService).mockResolvedValue(void 0)
 
     jest.clearAllMocks()
   })
@@ -101,6 +109,7 @@ describe('Register E2E', () => {
     }`
 
     await request.post('/graphql').send({ query }).expect(200)
+    await flushMicroTasks()
 
     const invitationRecord = await prisma.invitation.findUnique({ where: { id: invitation.id } })
     expect(invitationRecord.isActive).toBe(false)
@@ -110,6 +119,7 @@ describe('Register E2E', () => {
     jest.spyOn(EventEmitter2.prototype, 'emit')
     jest.spyOn(UserCreatedListener.prototype, 'sendConfirmationEmail')
     jest.spyOn(UserCreatedListener.prototype, 'createCustomerProfile')
+    jest.spyOn(UserCreatedListener.prototype, 'deactivateInvitation')
     const query = `mutation {
       register(
         email: "foo@bar.com",
@@ -123,19 +133,32 @@ describe('Register E2E', () => {
     }`
 
     await request.post('/graphql').send({ query }).expect(200)
+    await flushMicroTasks()
 
-    expect(EventEmitter2.prototype.emit).toHaveBeenCalledTimes(1)
+    expect(EventEmitter2.prototype.emit).toHaveBeenCalledTimes(2)
     const userDoc = await prisma.user.findUnique({ where: { email: 'foo@bar.com' } })
-    expect(EventEmitter2.prototype.emit).toHaveBeenCalledWith(
+    expect(EventEmitter2.prototype.emit).toHaveBeenNthCalledWith(
+      1,
       UserCreatedEvent.name,
-      expect.objectContaining({ props: { user: userDoc, name: 'Foo Bar' } }),
+      expect.objectContaining({
+        props: {
+          user: { ...userDoc, emailConfirmationToken: null, emailConfirmationTokenExpiresAt: null },
+          name: 'Foo Bar',
+          invitationToken: expect.any(String),
+        },
+      }),
     )
     expect(UserCreatedListener.prototype.createCustomerProfile).toHaveBeenCalledTimes(1)
     expect(UserCreatedListener.prototype.sendConfirmationEmail).toHaveBeenCalledTimes(1)
+    expect(UserCreatedListener.prototype.deactivateInvitation).toHaveBeenCalledTimes(1)
+    expect(EventEmitter2.prototype.emit).toHaveBeenNthCalledWith(
+      2,
+      EmailConfirmationCreatedEvent.name,
+      expect.anything(),
+    )
   })
 
   it('should send a confirmation to the email address of the user with the email confirmation', async () => {
-    jest.spyOn(MailerService.prototype, 'send' as keyof MailerService).mockResolvedValue(void 0)
     const query = `mutation {
       register(
         email: "foo@bar.com",

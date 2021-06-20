@@ -1,9 +1,10 @@
-import { ObjectType, PickType } from '@nestjs/graphql'
-import { ReservationLocationsInput } from './reservation-locations.input'
+import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
-export class ReservationLocationsType extends PickType(
-  ReservationLocationsInput,
-  ['badminton', 'tableTennis'],
-  ObjectType,
-) {}
+export class ReservationLocationsType {
+  @Field({ defaultValue: false })
+  tableTennis: boolean
+
+  @Field({ defaultValue: false })
+  badminton: boolean
+}

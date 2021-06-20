@@ -26,6 +26,9 @@ export class MailerService {
   async initTransport(): Promise<void> {
     this.logger.log('Initializing...')
 
+    const isTesting = process.env.NODE_ENV === 'test'
+    if (isTesting) return
+
     const configuration: SMTPConnection.Options = {
       host: this.config.get<string>('mail.smtp_host'),
       port: this.config.get<number>('mail.smtp_port'),

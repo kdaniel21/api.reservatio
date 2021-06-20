@@ -18,7 +18,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest.config.js"
+    "test:e2e": "jest --config ./test/jest.config.js --runInBand"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.6.0",
@@ -39,6 +39,7 @@
     "cookie-parser": "^1.4.5",
     "cuid": "^2.1.8",
     "date-fns": "^2.22.1",
+    "flush-microtasks": "^1.0.1",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.5",
     "handlebars": "^4.7.7",

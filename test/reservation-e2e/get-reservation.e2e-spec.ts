@@ -72,7 +72,7 @@ describe('GetReservation Integration', () => {
         isEmailConfirmed: true,
       },
     })
-    await prisma.customer.create({
+    const adminCustomer = await prisma.customer.create({
       data: {
         userId: adminUser.id,
         name: 'Admin Bar',
@@ -80,7 +80,12 @@ describe('GetReservation Integration', () => {
       },
     })
     adminAccessToken = jwt.sign(
-      { userId: adminUser.id, email: adminUser.email } as JwtPayload,
+      {
+        userId: adminUser.id,
+        email: adminUser.email,
+        customerRole: adminCustomer.role,
+        customerId: adminCustomer.id,
+      } as JwtPayload,
       config.get<string>('auth.jwt_secret'),
     )
 
@@ -238,14 +243,19 @@ describe('GetReservation Integration', () => {
         isEmailConfirmed: true,
       },
     })
-    await prisma.customer.create({
+    const customer = await prisma.customer.create({
       data: {
         userId: otherUser.id,
         name: 'Foo Bar',
       },
     })
     const otherUserAccessToken = jwt.sign(
-      { userId: otherUser.id, email: otherUser.email } as JwtPayload,
+      {
+        userId: otherUser.id,
+        email: otherUser.email,
+        customerId: customer.id,
+        customerRole: customer.role,
+      } as JwtPayload,
       config.get<string>('auth.jwt_secret'),
     )
     const query = `query {

@@ -9,6 +9,7 @@ import { CreateReservationService } from './services/create-reservation/create-r
 import { CreateRecurringReservationArgs } from './services/create-reservation/dto/create-recurring-reservation.args'
 import { CreateReservationArgs } from './services/create-reservation/dto/create-reservation.args'
 import { CreatedRecurringReservationType } from './services/create-reservation/dto/created-recurring-reservation.type'
+import { GetRecurringReservationsArgs } from './services/get-reservation/dto/get-recurring-reservations.args'
 import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.args'
 import { GetReservationsArgs } from './services/get-reservation/dto/get-reservations.args'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
@@ -73,5 +74,13 @@ export class ReservationsResolver {
   @Query(() => [ReservationType])
   reservations(@Args() args: GetReservationsArgs, @CurrentCustomer() customer: Customer): Promise<ReservationType[]> {
     return this.getReservationService.getReservations(args, customer)
+  }
+
+  @Query(() => [ReservationType])
+  recurringReservations(
+    @Args() args: GetRecurringReservationsArgs,
+    @CurrentCustomer() customer: Customer,
+  ): Promise<ReservationType[]> {
+    return this.getReservationService.getRecurringReservations(args, customer)
   }
 }

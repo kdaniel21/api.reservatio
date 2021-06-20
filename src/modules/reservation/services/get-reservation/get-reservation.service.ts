@@ -3,6 +3,7 @@ import { Resolver } from '@nestjs/graphql'
 import { Customer, CustomerRole, Reservation } from '@prisma/client'
 import { ReservationExceptions } from '../../reservation.exceptions'
 import { ReservationService } from '../../reservation.service'
+import { GetRecurringReservationsArgs } from './dto/get-recurring-reservations.args'
 import { GetReservationArgs } from './dto/get-reservation.args'
 import { GetReservationsArgs } from './dto/get-reservations.args'
 
@@ -25,6 +26,20 @@ export class GetReservationService {
       customer.role === CustomerRole.ADMIN
         ? await this.getAllReservations(args.startDate, args.endDate)
         : await this.getReservationsForCustomer(args.startDate, args.endDate, customer)
+
+    return reservations
+  }
+
+  async getRecurringReservations(args: GetRecurringReservationsArgs, customer: Customer): Promise<Reservation[]> {
+    const where: { [key: string]: any } = { recurringId: args.recurringId.toString(), isActive: true }
+    if (args.futureOnly) where.startTime = { gte: new Date() }
+
+    const reservations = await this.prisma.reservation.findMany({ where })
+
+    const canAccess = reservations.every((reservation) =>
+      this.reservationService.canCustomerAccess(customer, reservation),
+    )
+    if (!canAccess) throw new ReservationExceptions.ReservationNotAuthorized()
 
     return reservations
   }

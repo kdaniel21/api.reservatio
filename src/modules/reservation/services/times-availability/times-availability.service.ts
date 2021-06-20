@@ -2,7 +2,7 @@ import { PrismaService } from '@common/services/prisma.service'
 import { DateUtils } from '@common/utils/date-utils'
 import { Injectable } from '@nestjs/common'
 import { addMonths } from 'date-fns'
-import { isRecurringTimeAvailableArgs } from './dto/is-recurring-time-available.args'
+import { IsRecurringTimeAvailableArgs } from './dto/is-recurring-time-available.args'
 import { Recurrence } from './dto/recurrence.enum'
 import { RecurringTimeAvailabilityType } from './dto/recurring-time-availability.type'
 import { TimePeriod } from './dto/time-period.enum'
@@ -31,7 +31,7 @@ export class TimesAvailabilityService {
     return results
   }
 
-  async isRecurringTimeAvailable(args: isRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
+  async isRecurringTimeAvailable(args: IsRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
     const excludedDates = args.excludedDates?.map((date) => date.getTime()) || []
     const recurringDates = this.getDatesWithRecurrence(args.startTime, args.timePeriod, args.recurrence)
     const extendedDates = [...recurringDates, ...args.includedDates]

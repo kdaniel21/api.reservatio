@@ -8,7 +8,7 @@ registerEnumType(Recurrence, { name: 'Recurrence' })
 registerEnumType(TimePeriod, { name: 'TimePeriod' })
 
 @ArgsType()
-export class isRecurringTimeAvailableArgs extends OmitType(TimeProposalInput, ['excludedReservation'], ArgsType) {
+export class IsRecurringTimeAvailableArgs extends OmitType(TimeProposalInput, ['excludedReservation'], ArgsType) {
   @Field(() => [Date], { defaultValue: [] })
   @IsFutureDate({ each: true })
   readonly includedDates?: Date[]

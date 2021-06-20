@@ -6,11 +6,13 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Customer } from '@prisma/client'
 import { ReservationType } from './dto/reservation.type'
 import { CreateReservationService } from './services/create-reservation/create-reservation.service'
+import { CreateRecurringReservationArgs } from './services/create-reservation/dto/create-recurring-reservation.args'
 import { CreateReservationArgs } from './services/create-reservation/dto/create-reservation.args'
+import { CreatedRecurringReservationType } from './services/create-reservation/dto/created-recurring-reservation.type'
 import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.agrs'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
 import { AreTimesAvailableArgs } from './services/times-availability/dto/are-times-availabe.args'
-import { isRecurringTimeAvailableArgs } from './services/times-availability/dto/is-recurring-time-available.args'
+import { IsRecurringTimeAvailableArgs } from './services/times-availability/dto/is-recurring-time-available.args'
 import { RecurringTimeAvailabilityType } from './services/times-availability/dto/recurring-time-availability.type'
 import { TimeProposalAvailability } from './services/times-availability/dto/time-proposal-availability.type'
 import { TimesAvailabilityService } from './services/times-availability/times-availability.service'
@@ -36,7 +38,7 @@ export class ReservationsResolver {
   }
 
   @Query(() => RecurringTimeAvailabilityType)
-  isRecurringTimeAvailable(@Args() args: isRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
+  isRecurringTimeAvailable(@Args() args: IsRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
     return this.timeAvailabilityService.isRecurringTimeAvailable(args)
   }
 
@@ -46,5 +48,13 @@ export class ReservationsResolver {
     @CurrentCustomer() customer: Customer,
   ): Promise<ReservationType> {
     return this.createReservationService.createReservation(args, customer)
+  }
+
+  @Mutation(() => CreatedRecurringReservationType)
+  createRecurringReservation(
+    @Args() args: CreateRecurringReservationArgs,
+    @CurrentCustomer() customer: Customer,
+  ): Promise<CreatedRecurringReservationType> {
+    return this.createReservationService.createRecurringReservation(args, customer)
   }
 }

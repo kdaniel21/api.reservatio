@@ -1,9 +1,13 @@
 import { PrismaService } from '@common/services/prisma.service'
+import { TextUtils } from '@common/utils/text-utils'
 import { Injectable } from '@nestjs/common'
-import { Customer, Reservation } from '@prisma/client'
+import { Customer, Prisma, Reservation } from '@prisma/client'
+import { addMinutes, differenceInMinutes } from 'date-fns'
 import { TimesAvailabilityService } from '../times-availability/times-availability.service'
 import { CreateReservationExceptions } from './create-reservation.exceptions'
+import { CreateRecurringReservationArgs } from './dto/create-recurring-reservation.args'
 import { CreateReservationArgs } from './dto/create-reservation.args'
+import { CreatedRecurringReservationType } from './dto/created-recurring-reservation.type'
 
 @Injectable()
 export class CreateReservationService {
@@ -27,5 +31,32 @@ export class CreateReservationService {
     })
 
     return reservation
+  }
+
+  async createRecurringReservation(
+    args: CreateRecurringReservationArgs,
+    customer: Customer,
+  ): Promise<CreatedRecurringReservationType> {
+    const timeAvailability = await this.timeAvailabilityService.isRecurringTimeAvailable(args)
+
+    const hasUnavailable = !!timeAvailability.unavailableTimes.length
+    if (hasUnavailable) throw new CreateReservationExceptions.TimeNotAvailable()
+
+    const recurringId = TextUtils.generateUuid()
+    const minutesDifference = differenceInMinutes(args.endTime, args.startTime)
+    type ReservationsToCreate = Prisma.ReservationCreateManyArgs['data']
+    const reservationsToCreate: ReservationsToCreate = timeAvailability.availableTimes.map((startTime) => ({
+      recurringId,
+      name: args.name,
+      startTime,
+      endTime: addMinutes(startTime, minutesDifference),
+      tableTennis: args.locations.tableTennis,
+      badminton: args.locations.badminton,
+      customerId: customer.id,
+    }))
+
+    const { count } = await this.prisma.reservation.createMany({ data: reservationsToCreate })
+
+    return { count, recurringId }
   }
 }

@@ -1,5 +1,9 @@
-import { ObjectType, PartialType } from '@nestjs/graphql'
+import { ObjectType, PickType } from '@nestjs/graphql'
 import { ReservationLocationsInput } from './reservation-locations.input'
 
 @ObjectType()
-export class ReservationLocationsType extends PartialType(ReservationLocationsInput, ObjectType) {}
+export class ReservationLocationsType extends PickType(
+  ReservationLocationsInput,
+  ['badminton', 'tableTennis'],
+  ObjectType,
+) {}

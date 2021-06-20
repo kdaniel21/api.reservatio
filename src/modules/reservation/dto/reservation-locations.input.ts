@@ -3,9 +3,9 @@ import { ReservationLocationsType } from './reservation-locations.type'
 
 @InputType()
 export class ReservationLocationsInput implements ReservationLocationsType {
-  @Field({ nullable: true, defaultValue: false })
+  @Field({ nullable: true })
   tableTennis: boolean
 
-  @Field({ nullable: true, defaultValue: false })
+  @Field({ nullable: true })
   badminton: boolean
 }

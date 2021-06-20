@@ -2,9 +2,9 @@ import { PrismaService } from '@common/services/prisma.service'
 import { TextUtils } from '@common/utils/text-utils'
 import { Injectable } from '@nestjs/common'
 import { Customer, Prisma, Reservation } from '@prisma/client'
+import { ReservationExceptions } from '@reservation/reservation.exceptions'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import { TimesAvailabilityService } from '../times-availability/times-availability.service'
-import { CreateReservationExceptions } from './create-reservation.exceptions'
 import { CreateRecurringReservationArgs } from './dto/create-recurring-reservation.args'
 import { CreateReservationArgs } from './dto/create-reservation.args'
 import { CreatedRecurringReservationType } from './dto/created-recurring-reservation.type'
@@ -18,7 +18,7 @@ export class CreateReservationService {
 
   async createReservation(args: CreateReservationArgs, customer: Customer): Promise<Reservation> {
     const [timeAvailability] = await this.timeAvailabilityService.areTimesAvailable([args])
-    if (!timeAvailability.isAvailable) throw new CreateReservationExceptions.TimeNotAvailable()
+    if (!timeAvailability.isAvailable) throw new ReservationExceptions.TimeNotAvailable()
 
     const {
       locations: { tableTennis, badminton },
@@ -40,7 +40,7 @@ export class CreateReservationService {
     const timeAvailability = await this.timeAvailabilityService.isRecurringTimeAvailable(args)
 
     const hasUnavailable = !!timeAvailability.unavailableTimes.length
-    if (hasUnavailable) throw new CreateReservationExceptions.TimeNotAvailable()
+    if (hasUnavailable) throw new ReservationExceptions.TimeNotAvailable()
 
     const recurringId = TextUtils.generateUuid()
     const minutesDifference = differenceInMinutes(args.endTime, args.startTime)

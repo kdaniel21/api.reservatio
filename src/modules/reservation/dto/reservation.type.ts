@@ -5,6 +5,7 @@ import { ReservationLocationsType } from './reservation-locations.type'
 import { IsFutureDate } from '@reservation/validators/is-future-date.validator'
 import { IsTimeBefore } from '@reservation/validators/is-time-before.validator'
 import { HourDifferenceRange } from '@reservation/validators/hour-difference-range.validator'
+import { MaxLength, MinLength } from 'class-validator'
 
 @ObjectType()
 export class ReservationType implements Partial<Reservation> {
@@ -15,6 +16,8 @@ export class ReservationType implements Partial<Reservation> {
   readonly recurringId?: string
 
   @Field()
+  @MinLength(3)
+  @MaxLength(40)
   readonly name: string
 
   @Field()

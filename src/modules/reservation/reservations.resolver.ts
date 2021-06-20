@@ -16,6 +16,8 @@ import { IsRecurringTimeAvailableArgs } from './services/times-availability/dto/
 import { RecurringTimeAvailabilityType } from './services/times-availability/dto/recurring-time-availability.type'
 import { TimeProposalAvailability } from './services/times-availability/dto/time-proposal-availability.type'
 import { TimesAvailabilityService } from './services/times-availability/times-availability.service'
+import { UpdateReservationArgs } from './services/update-reservation/dto/update-reservation.args'
+import { UpdateReservationService } from './services/update-reservation/update-reservation.service'
 
 @UseGuards(GqlAuthGuard)
 @UseInterceptors(ResolveCurrentCustomerInterceptor)
@@ -25,6 +27,7 @@ export class ReservationsResolver {
     private readonly getReservationService: GetReservationService,
     private readonly timeAvailabilityService: TimesAvailabilityService,
     private readonly createReservationService: CreateReservationService,
+    private readonly updateReservationService: UpdateReservationService,
   ) {}
 
   @Query(() => ReservationType)
@@ -56,5 +59,10 @@ export class ReservationsResolver {
     @CurrentCustomer() customer: Customer,
   ): Promise<CreatedRecurringReservationType> {
     return this.createReservationService.createRecurringReservation(args, customer)
+  }
+
+  @Mutation(() => ReservationType)
+  async updateReservation(@Args() args: UpdateReservationArgs, @CurrentCustomer() customer: Customer): Promise<any> {
+    return this.updateReservationService.updateReservation(args, customer)
   }
 }

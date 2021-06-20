@@ -18,4 +18,10 @@ export namespace ReservationExceptions {
       })
     }
   }
+
+  export class TimeNotAvailable extends DomainException {
+    constructor() {
+      super({ message: 'The selected time is not available!', code: 'TIME_NOT_AVAILABLE' })
+    }
+  }
 }

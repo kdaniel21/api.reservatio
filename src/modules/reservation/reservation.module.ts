@@ -9,8 +9,15 @@ import { ReservationsResolver } from './reservations.resolver'
 import { CreateReservationService } from './services/create-reservation/create-reservation.service'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
 import { TimesAvailabilityService } from './services/times-availability/times-availability.service'
+import { UpdateReservationService } from './services/update-reservation/update-reservation.service'
 
-const services = [CreateReservationService, GetReservationService, ReservationService, TimesAvailabilityService]
+const services = [
+  CreateReservationService,
+  GetReservationService,
+  ReservationService,
+  TimesAvailabilityService,
+  UpdateReservationService,
+]
 
 @Module({
   imports: [CommonModule, AuthModule, CustomerModule],

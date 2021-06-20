@@ -3,7 +3,7 @@ import { TimeProposalInput } from '@reservation/services/times-availability/dto/
 import { MaxLength, MinLength } from 'class-validator'
 
 @ArgsType()
-export class CreateReservationArgs extends OmitType(TimeProposalInput, ['excludedReservation', 'locations'], ArgsType) {
+export class CreateReservationArgs extends OmitType(TimeProposalInput, ['excludedReservation'], ArgsType) {
   @MinLength(3)
   @MaxLength(40)
   @Field()

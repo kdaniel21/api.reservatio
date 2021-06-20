@@ -5,7 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator'
-import { differenceInHours } from 'date-fns'
+import { differenceInHours, differenceInMinutes } from 'date-fns'
 
 export function HourDifferenceRange({ property, min, max }, validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
@@ -28,7 +28,7 @@ export class HourDifferenceRangeConstraint implements ValidatorConstraintInterfa
     const date = new Date(value)
     const relatedDate = new Date(relatedValue)
 
-    const hoursDifference = differenceInHours(date, relatedDate)
+    const hoursDifference = differenceInMinutes(date, relatedDate) / 60
     return minHoursDifference <= hoursDifference && hoursDifference <= maxHoursDifference
   }
 }

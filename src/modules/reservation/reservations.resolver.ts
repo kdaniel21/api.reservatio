@@ -2,9 +2,11 @@ import { CurrentCustomer } from '@auth/decorators/current-customer.decorator'
 import { GqlAuthGuard } from '@auth/guards/gql-auth.guard'
 import { ResolveCurrentCustomerInterceptor } from '@auth/interceptors/resolve-current-customer.interceptor'
 import { UseGuards, UseInterceptors } from '@nestjs/common'
-import { Args, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Customer } from '@prisma/client'
 import { ReservationType } from './dto/reservation.type'
+import { CreateReservationService } from './services/create-reservation/create-reservation.service'
+import { CreateReservationArgs } from './services/create-reservation/dto/create-reservation.args'
 import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.agrs'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
 import { AreTimesAvailableArgs } from './services/times-availability/dto/are-times-availabe.args'
@@ -20,6 +22,7 @@ export class ReservationsResolver {
   constructor(
     private readonly getReservationService: GetReservationService,
     private readonly timeAvailabilityService: TimesAvailabilityService,
+    private readonly createReservationService: CreateReservationService,
   ) {}
 
   @Query(() => ReservationType)
@@ -33,7 +36,15 @@ export class ReservationsResolver {
   }
 
   @Query(() => RecurringTimeAvailabilityType)
-  async isRecurringTimeAvailable(@Args() args: isRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
+  isRecurringTimeAvailable(@Args() args: isRecurringTimeAvailableArgs): Promise<RecurringTimeAvailabilityType> {
     return this.timeAvailabilityService.isRecurringTimeAvailable(args)
+  }
+
+  @Mutation(() => ReservationType)
+  async createReservation(
+    @Args() args: CreateReservationArgs,
+    @CurrentCustomer() customer: Customer,
+  ): Promise<ReservationType> {
+    return this.createReservationService.createReservation(args, customer)
   }
 }

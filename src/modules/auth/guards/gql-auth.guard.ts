@@ -13,7 +13,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       return (await super.canActivate(context)) as boolean
-    } catch (e) {
+    } catch {
       throw new AuthExceptions.NotAuthenticated()
     }
   }

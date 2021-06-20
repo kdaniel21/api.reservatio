@@ -16,7 +16,7 @@
           Hello {{invitation.emailAddress}}!
         </mj-text>
 
-        <mj-button href='{{frontendHost}}/auth/invitation/{{invitation.token}}'>
+        <mj-button href='{{frontendHost}}/auth/invitation/{{unHashedToken}}'>
           Confirm
         </mj-button>
       </mj-column>

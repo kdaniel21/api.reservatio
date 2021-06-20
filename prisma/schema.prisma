@@ -14,15 +14,14 @@ model User {
   id                              String         @id @default(cuid())
   email                           String         @unique
   password                        String
-  passwordResetToken              String?        @map("password_reset_token") @unique
+  passwordResetToken              String?        @unique @map("password_reset_token")
   passwordResetTokenExpiresAt     DateTime?      @map("password_reset_token_expires_at")
   isDeleted                       Boolean        @default(false) @map("is_deleted")
   isEmailConfirmed                Boolean        @default(false) @map("is_email_confirmed")
-  emailConfirmationToken          String?        @map("email_confirmation_token") @unique
+  emailConfirmationToken          String?        @unique @map("email_confirmation_token")
   emailConfirmationTokenExpiresAt DateTime?      @map("email_confirmation_token_expires_at")
   refreshTokens                   RefreshToken[]
   customer                        Customer?
-  invitations                     Invitation[]
 
   @@map("users")
 }
@@ -66,6 +65,7 @@ model Customer {
   userId       String        @unique @map("user_id")
   reservations Reservation[]
   role         CustomerRole  @default(CUSTOMER)
+  invitations  Invitation[]
 
   @@index([userId])
   @@map("customers")
@@ -75,7 +75,7 @@ model Invitation {
   id           String   @id @default(cuid())
   token        String   @unique
   expiresAt    DateTime @map("expires_at")
-  inviter      User     @relation(fields: [inviterId], references: [id])
+  inviter      Customer @relation(fields: [inviterId], references: [id])
   inviterId    String   @map("inviter_id")
   emailAddress String   @map("email_address")
   isActive     Boolean  @default(true) @map("is_active")

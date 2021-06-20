@@ -4,7 +4,6 @@ import { CustomerType } from '../customer/dto/customer.type'
 import { ReservationLocationsType } from './dto/reservation-locations.type'
 import { ReservationType } from './dto/reservation.type'
 
-// TODO: Possibly merge with ReservationsResolver
 @Resolver(() => ReservationType)
 export class ReservationResolver {
   constructor(private readonly customerService: CustomerService) {}

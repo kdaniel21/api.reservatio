@@ -21,3 +21,6 @@ mail:
   smtp_user: 'fa61b87ebd50b0'
   smtp_password: '7f4a2d4fd2c814'
   sender_email_address: 'daniel@reservatio.com'
+
+invitation:
+  expiration_hours: 72

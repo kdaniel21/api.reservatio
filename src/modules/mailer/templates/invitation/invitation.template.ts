@@ -3,6 +3,7 @@ import { BaseTemplate } from '@mailer/base.template'
 
 export interface InvitationTemplateData {
   invitation: Invitation
+  unHashedToken: string
 }
 
 export class InvitationTemplate extends BaseTemplate<InvitationTemplateData> {

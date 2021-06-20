@@ -1,9 +1,10 @@
 import { PrismaService } from '@common/services/prisma.service'
 import { Resolver } from '@nestjs/graphql'
-import { Customer, Reservation } from '@prisma/client'
+import { Customer, CustomerRole, Reservation } from '@prisma/client'
 import { ReservationExceptions } from '../../reservation.exceptions'
 import { ReservationService } from '../../reservation.service'
-import { GetReservationArgs } from './dto/get-reservation.agrs'
+import { GetReservationArgs } from './dto/get-reservation.args'
+import { GetReservationsArgs } from './dto/get-reservations.args'
 
 @Resolver()
 export class GetReservationService {
@@ -17,5 +18,34 @@ export class GetReservationService {
     if (!canAccess) throw new ReservationExceptions.ReservationNotAuthorized()
 
     return reservation
+  }
+
+  async getReservations(args: GetReservationsArgs, customer: Customer): Promise<Reservation[]> {
+    const reservations =
+      customer.role === CustomerRole.ADMIN
+        ? await this.getAllReservations(args.startDate, args.endDate)
+        : await this.getReservationsForCustomer(args.startDate, args.endDate, customer)
+
+    return reservations
+  }
+
+  private getReservationsForCustomer(startDate: Date, endDate: Date, customer: Customer): Promise<Reservation[]> {
+    return this.prisma.reservation.findMany({
+      where: {
+        AND: [
+          { AND: [{ startTime: { gte: startDate } }, { startTime: { lt: endDate } }] },
+          { isActive: true },
+          {
+            OR: [{ endTime: { lt: new Date() }, customerId: customer.id.toString() }, { endTime: { gte: new Date() } }],
+          },
+        ],
+      },
+    })
+  }
+
+  private getAllReservations(startDate: Date, endDate: Date): Promise<Reservation[]> {
+    return this.prisma.reservation.findMany({
+      where: { AND: [{ startTime: { gte: startDate } }, { startTime: { lte: endDate } }] },
+    })
   }
 }

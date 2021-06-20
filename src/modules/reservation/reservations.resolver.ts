@@ -3,13 +3,14 @@ import { GqlAuthGuard } from '@auth/guards/gql-auth.guard'
 import { ResolveCurrentCustomerInterceptor } from '@auth/interceptors/resolve-current-customer.interceptor'
 import { UseGuards, UseInterceptors } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { Customer } from '@prisma/client'
+import { Customer, Reservation } from '@prisma/client'
 import { ReservationType } from './dto/reservation.type'
 import { CreateReservationService } from './services/create-reservation/create-reservation.service'
 import { CreateRecurringReservationArgs } from './services/create-reservation/dto/create-recurring-reservation.args'
 import { CreateReservationArgs } from './services/create-reservation/dto/create-reservation.args'
 import { CreatedRecurringReservationType } from './services/create-reservation/dto/created-recurring-reservation.type'
-import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.agrs'
+import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.args'
+import { GetReservationsArgs } from './services/get-reservation/dto/get-reservations.args'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
 import { AreTimesAvailableArgs } from './services/times-availability/dto/are-times-availabe.args'
 import { IsRecurringTimeAvailableArgs } from './services/times-availability/dto/is-recurring-time-available.args'
@@ -62,7 +63,15 @@ export class ReservationsResolver {
   }
 
   @Mutation(() => ReservationType)
-  async updateReservation(@Args() args: UpdateReservationArgs, @CurrentCustomer() customer: Customer): Promise<any> {
+  updateReservation(
+    @Args() args: UpdateReservationArgs,
+    @CurrentCustomer() customer: Customer,
+  ): Promise<ReservationType> {
     return this.updateReservationService.updateReservation(args, customer)
+  }
+
+  @Query(() => [ReservationType])
+  reservations(@Args() args: GetReservationsArgs, @CurrentCustomer() customer: Customer): Promise<ReservationType[]> {
+    return this.getReservationService.getReservations(args, customer)
   }
 }

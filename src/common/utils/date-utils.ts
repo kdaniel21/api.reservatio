@@ -22,4 +22,6 @@ export namespace DateUtils {
         })
       })
       .filter((date) => date.getTime() <= endDate.getTime())
+
+  export const removeTime = (date: Date): Date => new Date(date.toDateString())
 }

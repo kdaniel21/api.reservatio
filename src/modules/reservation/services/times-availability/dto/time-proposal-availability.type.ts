@@ -1,16 +1,13 @@
-import { Field, ObjectType, OmitType } from '@nestjs/graphql'
-import { ReservationLocationsType } from '@reservation/dto/reservation-locations.type'
+import { Field, IntersectionType, ObjectType, OmitType, PickType } from '@nestjs/graphql'
+import { ReservationType } from '@reservation/dto/reservation.type'
 import { TimeProposalInput } from './time-proposal.input'
 
 @ObjectType()
-export class TimeProposalAvailability extends OmitType(
-  TimeProposalInput,
-  ['excludedReservation', 'locations'],
+export class TimeProposalAvailability extends IntersectionType(
+  OmitType(TimeProposalInput, ['excludedReservation', 'locations']),
+  PickType(ReservationType, ['locations'] as const),
   ObjectType,
 ) {
   @Field()
   readonly isAvailable: boolean
-
-  @Field(() => ReservationLocationsType)
-  readonly locations: ReservationLocationsType
 }

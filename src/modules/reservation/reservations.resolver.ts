@@ -7,15 +7,29 @@ import { Customer } from '@prisma/client'
 import { ReservationType } from './dto/reservation.type'
 import { GetReservationArgs } from './services/get-reservation/dto/get-reservation.agrs'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
+import { AreTimesAvailableArgs } from './services/times-availability/dto/are-times-availabe.args'
+import { TimeProposalAvailability } from './services/times-availability/dto/time-proposal-availability.type'
+import { TimeProposalInput } from './services/times-availability/dto/time-proposal.input'
+import { TimesAvailabilityService } from './services/times-availability/times-availability.service'
 
+@UseGuards(GqlAuthGuard)
+@UseInterceptors(ResolveCurrentCustomerInterceptor)
 @Resolver()
 export class ReservationsResolver {
-  constructor(private readonly getReservationService: GetReservationService) {}
+  constructor(
+    private readonly getReservationService: GetReservationService,
+    private readonly timeAvailabilityService: TimesAvailabilityService,
+  ) {}
 
-  @UseGuards(GqlAuthGuard)
-  @UseInterceptors(ResolveCurrentCustomerInterceptor)
+  // @UseGuards(GqlAuthGuard)
+  // @UseInterceptors(ResolveCurrentCustomerInterceptor)
   @Query(() => ReservationType)
   reservation(@Args() args: GetReservationArgs, @CurrentCustomer() customer: Customer): Promise<ReservationType> {
     return this.getReservationService.getReservationById(args, customer)
+  }
+
+  @Query(() => [TimeProposalAvailability])
+  areTimesAvailable(@Args() args: AreTimesAvailableArgs): Promise<TimeProposalAvailability[]> {
+    return this.timeAvailabilityService.areTimesAvailable(args.timeProposals)
   }
 }

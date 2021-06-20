@@ -34,9 +34,9 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "npm run dev:debug",
+      "name": "npm run start:debug",
       "protocol": "inspector",
-      "port": 4321,
+      "port": 9229,
       "restart": true,
       "cwd": "${workspaceRoot}"
     }

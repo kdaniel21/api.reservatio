@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { Reservation } from '@prisma/client'
 import { CustomerType } from '@customer/dto/customer.type'
-import { ReservationLocationType } from './reservation-location.type'
+import { ReservationLocationsType } from './reservation-locations.type'
 
 @ObjectType()
 export class ReservationType implements Partial<Reservation> {
@@ -31,8 +31,8 @@ export class ReservationType implements Partial<Reservation> {
   readonly badminton: boolean
   readonly tableTennis: boolean
 
-  @Field(() => ReservationLocationType)
-  readonly locations?: ReservationLocationType
+  @Field(() => ReservationLocationsType)
+  readonly locations?: ReservationLocationsType
 
   @Field()
   readonly createdAt: Date

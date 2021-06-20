@@ -1,8 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { ReservationLocationType } from './reservation-location.type'
+import { ReservationLocationsType } from './reservation-locations.type'
 
 @InputType()
-export class ReservationLocationInput implements ReservationLocationType {
+export class ReservationLocationsInput implements ReservationLocationsType {
   @Field({ nullable: true, defaultValue: false })
   tableTennis: boolean
 

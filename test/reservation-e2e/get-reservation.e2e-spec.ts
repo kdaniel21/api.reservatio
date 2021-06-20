@@ -60,7 +60,10 @@ describe('GetReservation Integration', () => {
         name: 'Foo Bar',
       },
     })
-    accessToken = jwt.sign({ userId: user.id, email: user.email } as JwtPayload, config.get<string>('auth.jwt_secret'))
+    accessToken = jwt.sign(
+      { userId: user.id, email: user.email, customerRole: customer.role, customerId: customer.id } as JwtPayload,
+      config.get<string>('auth.jwt_secret'),
+    )
 
     adminUser = await prisma.user.create({
       data: {

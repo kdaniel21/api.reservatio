@@ -16,8 +16,9 @@ export class ResolveCurrentCustomerInterceptor implements NestInterceptor {
 
     const redactedUser = ctx.req.user as JwtPayload
     if (!redactedUser) throw new DomainException({ message: 'Request is not authenticated.' })
+    if (!redactedUser.customerId) throw new AuthExceptions.InvalidCustomer()
 
-    const customer = await this.customerService.getCustomerByUserId(redactedUser.userId)
+    const customer = await this.customerService.getCustomerById(redactedUser.customerId)
     if (!customer) throw new AuthExceptions.InvalidCustomer()
 
     ctx.req['resolvedCustomer'] = customer

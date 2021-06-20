@@ -1,6 +1,6 @@
+import { Match } from '@auth/validators/match.validator'
 import { ArgsType, Field } from '@nestjs/graphql'
 import { IsEmail, MaxLength, MinLength, Matches } from 'class-validator'
-import { Match } from 'src/modules/auth/decorators/match.decorator'
 
 @ArgsType()
 export class RegisterArgs {

@@ -1,7 +1,17 @@
 import { ValidationError } from '@nestjs/common'
 import { DomainException } from '../core/domain-exception'
 
-// TODO: Find a sophisticated solution
+const extractMessage = (errors: ValidationError[]): string => {
+  if (!errors.length) return 'Validation error!'
+
+  const errorWithConstraintProp = errors.find((error) => error.hasOwnProperty('constraints'))
+  if (errorWithConstraintProp) return Object.values(errorWithConstraintProp.constraints)[0]
+
+  const allChildren = errors.flatMap((error) => error.children)
+  return extractMessage(allChildren)
+}
+
 export const validationExceptionFactory = (errors: ValidationError[]) => {
-  return new DomainException({ message: Object.values(errors[0].constraints)[0] as string, code: 'VALIDATION_ERROR' })
+  const message = extractMessage(errors)
+  return new DomainException({ message, code: 'VALIDATION_ERROR' })
 }

@@ -1,7 +1,7 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql'
 import { CustomerService } from '../customer/customer.service'
 import { CustomerType } from '../customer/dto/customer.type'
-import { ReservationLocationType } from './dto/reservation-location.type'
+import { ReservationLocationsType } from './dto/reservation-locations.type'
 import { ReservationType } from './dto/reservation.type'
 
 // TODO: Possibly merge with ReservationsResolver
@@ -10,7 +10,7 @@ export class ReservationResolver {
   constructor(private readonly customerService: CustomerService) {}
 
   @ResolveField()
-  locations(@Parent() reservation: ReservationType): ReservationLocationType {
+  locations(@Parent() reservation: ReservationType): ReservationLocationsType {
     const { badminton, tableTennis } = reservation
     return { badminton, tableTennis }
   }

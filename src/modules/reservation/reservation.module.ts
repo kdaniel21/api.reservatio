@@ -8,8 +8,9 @@ import { ReservationsResolver } from './reservations.resolver'
 // TODO: Create single endpoint for exporting
 import { CreateReservationService } from './services/create-reservation/create-reservation.service'
 import { GetReservationService } from './services/get-reservation/get-reservation.service'
+import { TimesAvailabilityService } from './services/times-availability/times-availability.service'
 
-const services = [CreateReservationService, GetReservationService, ReservationService]
+const services = [CreateReservationService, GetReservationService, ReservationService, TimesAvailabilityService]
 
 @Module({
   imports: [CommonModule, AuthModule, CustomerModule],

@@ -12,7 +12,6 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/../',
   }),
-  allowJs: true,
   setupFiles: ['jest-date-mock', './setup/clear-all-data.js'],
   setupFilesAfterEnv: ['jest-extended'],
   globalSetup: './setup/setup-test-schema.js',

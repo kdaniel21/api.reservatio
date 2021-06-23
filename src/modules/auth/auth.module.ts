@@ -4,6 +4,7 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { CommonModule } from 'src/common/common.module'
 import { CustomerModule } from '../customer/customer.module'
+import { InvitationModule } from '../invitation/invitation.module'
 import { MailerModule } from '../mailer/mailer.module'
 import { AuthResolver } from './auth.resolver'
 import { EmailConfirmationCreatedListener } from './events/email-confirmation-created/email-confirmation-created.listener'
@@ -42,6 +43,7 @@ const services = [
     }),
     MailerModule,
     CustomerModule,
+    InvitationModule,
   ],
   exports: [...services],
   providers: [

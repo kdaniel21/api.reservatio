@@ -3,10 +3,11 @@ import { TextUtils } from '@common/utils/text-utils'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { Customer } from '@prisma/client'
+import { Customer, Invitation } from '@prisma/client'
 import { addHours } from 'date-fns'
 import { CreateInvitationArgs } from './dto/create-invitation.args'
 import { InvitationType } from './dto/invitation.type'
+import { UpdateInvitationArgs } from './dto/update-invitation.args'
 import { InvitationCreatedEvent } from './events/invitation-created/invitation-created.event'
 import { InvitationExceptions } from './invitation.exceptions'
 
@@ -47,6 +48,12 @@ export class InvitationService {
     const hashedInvitationToken = TextUtils.hashText(unHashedInvitationToken)
 
     await this.prisma.invitation.update({ where: { token: hashedInvitationToken }, data: { isActive: false } })
+  }
+
+  updateInvitation(args: UpdateInvitationArgs): Promise<Invitation> {
+    const { id, ...updatedProperties } = args
+
+    return this.prisma.invitation.update({ where: { id }, data: updatedProperties })
   }
 
   private async isEmailAlreadyRegistered(emailAddress: string): Promise<boolean> {

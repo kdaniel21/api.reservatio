@@ -5,7 +5,7 @@ import { applyMiddleware } from './apply-middleware'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   applyMiddleware(app)
-  await app.listen(4000)
+  await app.listen(4000, '0.0.0.0')
 }
 
 bootstrap()

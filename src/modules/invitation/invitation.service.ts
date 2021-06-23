@@ -43,6 +43,12 @@ export class InvitationService {
     return invitation
   }
 
+  async deactivateInvitation(unHashedInvitationToken: string): Promise<void> {
+    const hashedInvitationToken = TextUtils.hashText(unHashedInvitationToken)
+
+    await this.prisma.invitation.update({ where: { token: hashedInvitationToken }, data: { isActive: false } })
+  }
+
   private async isEmailAlreadyRegistered(emailAddress: string): Promise<boolean> {
     const count = await this.prisma.user.count({ where: { email: emailAddress } })
     return count !== 0

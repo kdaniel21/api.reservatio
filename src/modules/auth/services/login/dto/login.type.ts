@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { UserType } from '@user/dto/user.type'
 
 @ObjectType()
 export class LoginType {
@@ -8,6 +9,6 @@ export class LoginType {
   @Field()
   refreshToken: string
 
-  // @Field(() => UserType)
-  // user: UserType
+  @Field(() => UserType)
+  user: UserType
 }

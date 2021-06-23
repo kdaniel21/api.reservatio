@@ -39,14 +39,17 @@ export class AuthResolver {
 
   @Mutation(() => LoginType)
   async login(@Args() args: LoginArgs, @Context() ctx: GraphqlContext): Promise<LoginType> {
-    const { accessToken, refreshToken, unHashedRefreshToken } = await this.loginService.login(args.email, args.password)
+    const { accessToken, refreshToken, unHashedRefreshToken, user } = await this.loginService.login(
+      args.email,
+      args.password,
+    )
 
     const isProduction = this.configService.get<string>('node.environment') === 'PRODUCTION'
     const cookieOptions = { httpOnly: true, expires: refreshToken.expiresAt, secure: isProduction, sameSite: true }
 
     ctx.res.cookie('refresh-token', unHashedRefreshToken, cookieOptions)
 
-    return { accessToken, refreshToken: unHashedRefreshToken }
+    return { accessToken, refreshToken: unHashedRefreshToken, user }
   }
 
   @Mutation(() => MessageType)

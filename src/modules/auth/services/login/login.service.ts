@@ -31,6 +31,6 @@ export class LoginService {
     const accessToken = await this.accessTokenService.createAccessTokenForUser(user)
     const { refreshToken, unHashedToken } = await this.refreshTokenService.createRefreshToken(user)
 
-    return { accessToken, refreshToken, unHashedRefreshToken: unHashedToken }
+    return { accessToken, refreshToken, unHashedRefreshToken: unHashedToken, user }
   }
 }

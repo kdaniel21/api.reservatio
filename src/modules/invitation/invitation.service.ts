@@ -3,7 +3,7 @@ import { TextUtils } from '@common/utils/text-utils'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { Customer, Invitation } from '@prisma/client'
+import { Customer, Invitation, Prisma } from '@prisma/client'
 import { addHours } from 'date-fns'
 import { CreateInvitationArgs } from './dto/create-invitation.args'
 import { InvitationType } from './dto/invitation.type'
@@ -18,6 +18,14 @@ export class InvitationService {
     private readonly config: ConfigService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  getInvitations(args: Prisma.InvitationFindManyArgs): Promise<Invitation[]> {
+    return this.prisma.invitation.findMany(args)
+  }
+
+  getTotalNumOfInvitations(): Promise<number> {
+    return this.prisma.invitation.count()
+  }
 
   async createInvitation(args: CreateInvitationArgs, customer: Customer): Promise<InvitationType> {
     const isEmailAlreadyRegistered = await this.isEmailAlreadyRegistered(args.emailAddress)

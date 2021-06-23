@@ -6,7 +6,7 @@ http:
 
 auth:
   jwt_secret: 'thisisasecret!!!!!4444'
-  jwt_expiration: '15min'
+  jwt_expiration: '60min'
   bcrypt_salt_rounds: 8
   refresh_token_expiration_days: 30
   refresh_token_length: 50

@@ -1,10 +1,18 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { addDays } from 'date-fns'
+import crypto from 'crypto'
 
 const prisma = new PrismaClient()
 
 export default async () => {
   try {
+    await prisma.reservation.deleteMany()
+    await prisma.invitation.deleteMany()
+    await prisma.refreshToken.deleteMany()
+    await prisma.customer.deleteMany()
+    await prisma.user.deleteMany()
+
     const user = await prisma.user.upsert({
       where: { email: 'daniel@reservatio.com' },
       update: {},
@@ -17,6 +25,15 @@ export default async () => {
 
     const customer = await prisma.customer.create({
       data: { name: 'Daniel', userId: user.id },
+    })
+
+    await prisma.invitation.create({
+      data: {
+        emailAddress: 'daniel@reservatio.com',
+        expiresAt: addDays(new Date(), 2),
+        token: crypto.randomBytes(20).toString('hex'),
+        inviterId: customer.id,
+      },
     })
 
     await prisma.reservation.create({

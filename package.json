@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest.config.js --runInBand"
   },
   "dependencies": {
+    "@devoxa/prisma-relay-cursor-connection": "^2.0.2",
     "@nestjs-modules/mailer": "^1.6.0",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^0.6.3",

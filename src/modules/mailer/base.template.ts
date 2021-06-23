@@ -36,7 +36,7 @@ export abstract class BaseTemplate<T> {
   }
 
   private async compileTemplate(): Promise<any> {
-    const completePath = path.join(__dirname, `templates/${this.path}`)
+    const completePath = path.join(process.cwd(), `dist/modules/mailer/templates`, this.path)
     const mjmlHtml = await fs.readFile(completePath, 'utf-8')
 
     const compiledTemplate = handlebars.compile(mjmlHtml)

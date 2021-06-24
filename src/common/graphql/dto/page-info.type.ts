@@ -3,10 +3,10 @@ import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class PageInfoType implements PageInfo {
-  @Field()
+  @Field({ nullable: true })
   readonly startCursor?: string
 
-  @Field()
+  @Field({ nullable: true })
   readonly endCursor?: string
 
   @Field()

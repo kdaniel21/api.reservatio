@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Customer, Invitation, Prisma } from '@prisma/client'
 import { addHours } from 'date-fns'
 import { CreateInvitationArgs } from './dto/create-invitation.args'
+import { GetInvitationArgs } from './dto/get-invitation.args'
 import { InvitationType } from './dto/invitation.type'
 import { UpdateInvitationArgs } from './dto/update-invitation.args'
 import { InvitationCreatedEvent } from './events/invitation-created/invitation-created.event'
@@ -18,6 +19,10 @@ export class InvitationService {
     private readonly config: ConfigService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  getInvitation(args: GetInvitationArgs): Promise<InvitationType> {
+    return this.prisma.invitation.findUnique({ where: { id: args.id } })
+  }
 
   getInvitations(args: Prisma.InvitationFindManyArgs): Promise<Invitation[]> {
     return this.prisma.invitation.findMany(args)

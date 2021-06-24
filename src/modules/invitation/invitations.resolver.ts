@@ -12,6 +12,7 @@ import { UpdateInvitationArgs } from './dto/update-invitation.args'
 import { InvitationService } from './invitation.service'
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection'
 import { PaginationArgs } from '@common/graphql/dto/pagination.args'
+import { GetInvitationArgs } from './dto/get-invitation.args'
 
 // @CustomerRoles(CustomerRole.ADMIN)
 @UseGuards(GqlAuthGuard, CustomerRolesGuard)
@@ -41,5 +42,10 @@ export class InvitationsResolver {
         decodeCursor: (cursor) => JSON.parse(Buffer.from(cursor, 'base64').toString('ascii')),
       },
     )
+  }
+
+  @Query(() => InvitationType)
+  invitation(@Args() args: GetInvitationArgs): Promise<InvitationType> {
+    return this.invitationService.getInvitation(args)
   }
 }

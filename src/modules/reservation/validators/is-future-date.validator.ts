@@ -1,3 +1,4 @@
+import { DateUtils } from '@common/utils/date-utils'
 import {
   registerDecorator,
   ValidationArguments,
@@ -21,7 +22,7 @@ export function IsFutureDate(validationOptions?: ValidationOptions) {
 @ValidatorConstraint({ name: 'IsFutureDate' })
 export class IsFutureDateConstraint implements ValidatorConstraintInterface {
   validate(value: any): boolean {
-    const date = new Date(value)
+    const date = DateUtils.removeTime(new Date(value))
     return !isPast(date)
   }
 

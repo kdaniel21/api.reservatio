@@ -26,7 +26,7 @@ export class UserCreatedListener {
 
   @OnEvent(UserCreatedEvent.name)
   async deactivateInvitation(event: UserCreatedEvent): Promise<void> {
-    await this.invitationService.deactivateInvitation(event.props.invitationToken)
+    await this.invitationService.redeemInvitation(event.props.invitationToken)
   }
 
   @OnEvent(UserCreatedEvent.name)

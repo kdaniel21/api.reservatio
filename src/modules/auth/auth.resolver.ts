@@ -45,7 +45,12 @@ export class AuthResolver {
     )
 
     const isProduction = this.configService.get<string>('node.environment') === 'PRODUCTION'
-    const cookieOptions = { httpOnly: true, expires: refreshToken.expiresAt, secure: isProduction, sameSite: true }
+    const cookieOptions = {
+      httpOnly: true,
+      expires: refreshToken.expiresAt,
+      secure: true,
+      sameSite: 'none' as const,
+    }
 
     ctx.res.cookie('refresh-token', unHashedRefreshToken, cookieOptions)
 

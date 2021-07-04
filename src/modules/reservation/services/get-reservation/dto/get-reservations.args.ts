@@ -13,7 +13,7 @@ export class GetReservationsArgs {
   readonly startDate: Date
 
   @Field()
-  @Transform(({ value }) => DateUtils.removeTime(addDays(value, 1)))
+  @Transform(({ value }) => DateUtils.removeTime(value))
   @HourDifferenceRange({ property: 'startDate', min: 24, max: 7 * 24 })
   readonly endDate: Date
 }

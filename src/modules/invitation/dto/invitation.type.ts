@@ -26,5 +26,11 @@ export class InvitationType implements Partial<Invitation> {
   readonly isActive: boolean
 
   @Field()
+  readonly isCompleted: boolean
+
+  @Field()
+  readonly isRedeemable?: boolean
+
+  @Field()
   readonly createdAt: Date
 }

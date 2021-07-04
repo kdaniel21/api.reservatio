@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Customer, Invitation, Prisma } from '@prisma/client'
-import { addHours } from 'date-fns'
+import { addHours, isPast } from 'date-fns'
 import { CreateInvitationArgs } from './dto/create-invitation.args'
 import { GetInvitationArgs } from './dto/get-invitation.args'
 import { InvitationType } from './dto/invitation.type'
@@ -57,16 +57,25 @@ export class InvitationService {
     return invitation
   }
 
-  async deactivateInvitation(unHashedInvitationToken: string): Promise<void> {
+  async redeemInvitation(unHashedInvitationToken: string): Promise<void> {
     const hashedInvitationToken = TextUtils.hashText(unHashedInvitationToken)
 
-    await this.prisma.invitation.update({ where: { token: hashedInvitationToken }, data: { isActive: false } })
+    await this.prisma.invitation.update({
+      where: { token: hashedInvitationToken },
+      data: { isCompleted: true },
+    })
   }
 
   updateInvitation(args: UpdateInvitationArgs): Promise<Invitation> {
     const { id, ...updatedProperties } = args
 
     return this.prisma.invitation.update({ where: { id }, data: updatedProperties })
+  }
+
+  isInvitationRedeemable(invitation: Pick<Invitation, 'isCompleted' | 'expiresAt' | 'isActive'>): boolean {
+    const isExpired = isPast(invitation.expiresAt)
+
+    return invitation.isActive && !invitation.isCompleted && !isExpired
   }
 
   private async isEmailAlreadyRegistered(emailAddress: string): Promise<boolean> {

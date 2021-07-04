@@ -3,12 +3,12 @@ import { User } from '@prisma/client'
 import { PrismaService } from 'src/common/services/prisma.service'
 import { RegisterArgs } from './dto/register.args'
 import { RegisterExceptions } from './register.exceptions'
-import { isPast } from 'date-fns'
 import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config'
 import { TextUtils } from 'src/common/utils/text-utils'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { UserCreatedEvent } from '../../events/user-created/user-created.event'
+import { InvitationService } from 'src/modules/invitation/invitation.service'
 
 @Injectable()
 export class RegisterService {
@@ -16,6 +16,7 @@ export class RegisterService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly invitationService: InvitationService,
   ) {}
 
   async register(args: RegisterArgs): Promise<User> {
@@ -39,12 +40,13 @@ export class RegisterService {
 
   private async isInvitationValid(invitationToken: string, email: string): Promise<boolean> {
     const hashedInvitationToken = TextUtils.hashText(invitationToken)
-
     const invitation = await this.prisma.invitation.findUnique({ where: { token: hashedInvitationToken } })
-    const isExpired = isPast(invitation?.expiresAt)
-    const doEmailsMatch = invitation?.emailAddress === email
+    if (!invitation) return false
 
-    return invitation && invitation.isActive && !isExpired && doEmailsMatch
+    const doEmailsMatch = invitation?.emailAddress === email
+    const isRedeemable = this.invitationService.isInvitationRedeemable(invitation)
+
+    return isRedeemable && doEmailsMatch
   }
 
   private hashPassword(password: string): Promise<string> {

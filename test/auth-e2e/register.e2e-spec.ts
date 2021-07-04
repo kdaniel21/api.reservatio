@@ -112,7 +112,8 @@ describe('Register E2E', () => {
     await flushMicroTasks()
 
     const invitationRecord = await prisma.invitation.findUnique({ where: { id: invitation.id } })
-    expect(invitationRecord.isActive).toBe(false)
+    expect(invitationRecord.isActive).toBe(true)
+    expect(invitationRecord.isCompleted).toBe(true)
   })
 
   it('should emit a UserCreatedEvent and fire an AfterUserCreated handler after creating a user', async () => {

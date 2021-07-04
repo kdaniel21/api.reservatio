@@ -11,6 +11,6 @@ export class MailerModule implements OnApplicationBootstrap {
   constructor(private readonly mailerService: MailerService) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    await this.mailerService.initTransport()
+    // await this.mailerService.initTransport()
   }
 }

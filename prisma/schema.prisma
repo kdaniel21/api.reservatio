@@ -79,6 +79,7 @@ model Invitation {
   inviterId    String   @map("inviter_id")
   emailAddress String   @map("email_address")
   isActive     Boolean  @default(true) @map("is_active")
+  isCompleted  Boolean  @default(false) @map("is_completed")
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("invitations")
